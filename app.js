@@ -128,106 +128,59 @@ function introMessage(recipientId, message, NextMessage) {
 
 // send rich message with kitten
 function showodds(recipientId, parameters) {
-    var ref = firebase.database().ref('user/');
+    /*var ref = firebase.database().ref('user/');
     ref.child(recipientId).once('value', function(snapshot) {
-        var Query = snapshot.val().query;
-        const options = {
-            fts: Query,
-            offset: 0,
-            limit: 4,
-            sort: 'Popular',
-            fl: [price]
-        };
-        shopstyle.products(options).then(function(response){
-                message = {
-                    "attachment": {
-                        "type": "template",
-                        "payload": {
-                            "template_type": "list",
-                            "top_element_style": "compact",
-                            "elements": [{
-                                "title": response.products[0].brandedName,
-                                "subtitle": response.products[0].priceLabel,
-                                "image_url": response.products[0].image.sizes.Best.url,
-                                "default_action": {
-                                    "type": "web_url",
-                                    "url": response.products[0].image.sizes.Best.url
-                                },
-                                "buttons": [
-                                    {
-                                        "title": "Go to Store",
-                                        "type": "web_url",
-                                        "url": response.products[0].clickUrl,
-                                        "messenger_extensions": true,
-                                        "webview_height_ratio": "tall"
-                                    }
-                                ]
-                            }, {
-                                "title": response.products[1].brandedName,
-                                "subtitle": response.products[1].priceLabel,
-                                "image_url": response.products[1].image.sizes.Large.url,
-                                "default_action": {
-                                    "type": "web_url",
-                                    "url": response.products[1].image.sizes.Best.url
-                                },
-                                "buttons": [
-                                    {
-                                        "title": "Go to Store",
-                                        "type": "web_url",
-                                        "url": response.products[1].clickUrl,
-                                        "messenger_extensions": true,
-                                        "webview_height_ratio": "tall"
-                                    }
-                                ]
-                            },{
-                                "title": response.products[2].brandedName,
-                                "subtitle": response.products[2].priceLabel,
-                                "image_url": response.products[2].image.sizes.Large.url,
-                                "default_action": {
-                                    "type": "web_url",
-                                    "url": response.products[2].image.sizes.Best.url
-                                },
-                                "buttons": [
-                                    {
-                                        "title": "Go to Store",
-                                        "type": "web_url",
-                                        "url": response.products[2].clickUrl,
-                                        "messenger_extensions": true,
-                                        "webview_height_ratio": "tall"
-                                    }
-                                ]
-                            },{
-                                "title": response.products[3].brandedName,
-                                "subtitle": response.products[3].priceLabel,
-                                "image_url": response.products[3].image.sizes.Large.url,
-                                "default_action": {
-                                    "type": "web_url",
-                                    "url": response.products[3].image.sizes.Best.url
-                                },
-                                "buttons": [
-                                    {
-                                        "title": "Go to Store",
-                                        "type": "web_url",
-                                        "url": response.products[3].clickUrl,
-                                        "messenger_extensions": true,
-                                        "webview_height_ratio": "tall"
-                                    }
-                                ]
-                            }],
+        var Query = snapshot.val().query;*/
+        message = {
+            "attachment": {
+                "type": "template",
+                "payload": {
+                    "template_type": "generic",
+                    "elements": [{
+                        "image_url": "https://github.com/jambobjambo/Betty/blob/master/image/odds2.jpg",
+                        "buttons": [
+                            {
+                                "title": "Place a Bet",
+                                "type": "postback",
+                                payload: "PLACE_BET"
+                            },
+                            {
+                                "title": "Add to Accumulator",
+                                "type": "postback",
+                                payload: "PLACE_BET"
+                            },
+                            {
+                                "title": "Update",
+                                "type": "postback",
+                                payload: "PLACE_BET"
+                            }
+                        ]
+                    },
+                        {
+                            "image_url": "https://github.com/jambobjambo/Betty/blob/master/image/odds1.jpg",
                             "buttons": [
                                 {
-                                    "title": "View More",
+                                    "title": "Place a Bet",
                                     "type": "postback",
-                                    "payload": "view_more"
+                                    payload: "PLACE_BET"
+                                },
+                                {
+                                    "title": "Add to Accumulator",
+                                    "type": "postback",
+                                    payload: "PLACE_BET"
+                                },
+                                {
+                                    "title": "Update",
+                                    "type": "postback",
+                                    payload: "PLACE_BET"
                                 }
                             ]
-                        }
-                    }
-                };
-                sendMessage(recipientId, message);
-                sendMessage(recipientId, {text: "Here is a few I've found :D"});
+                        }]
+                }
             }
-        );
+        };
+        sendMessage(recipientId, message);
 
-    });
+    /*
+    });*/
 };
