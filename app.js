@@ -139,6 +139,7 @@ function showodds(recipientId, parameters) {
                     "elements": [{
                         "title":"Premier League, 3rd December",
                         "subtitle":"12:30PM",
+                        "item_url":"https://petersfancybrownhats.com",
                         "image_url": "http://pasteboard.co/4BYTl02ml.jpg",
                         "buttons": [
                             {
@@ -161,6 +162,7 @@ function showodds(recipientId, parameters) {
                         {
                             "title":"November Tests, 3rd December",
                             "subtitle":"2:30PM",
+                            "item_url":"https://petersfancybrownhats.com",
                             "image_url": "http://pasteboard.co/4BYqhhTRO.jpg",
                             "buttons": [
                                 {
