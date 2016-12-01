@@ -185,6 +185,7 @@ function showodds(recipientId, parameters) {
                 }
             }
         };
+        console.log(message);
         sendMessage(recipientId, message);
 
     /*
