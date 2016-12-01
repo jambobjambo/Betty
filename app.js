@@ -58,7 +58,7 @@ app.post('/webhook', function (req, res) {
                 sessionId: event.sender.id
             });
             request.on('response', function (response) {
-                if (response.result.action == "PALCE_BET") {
+                if (response.result.action == "PLACE_BET") {
                     showodds(event.sender.id, response.result.parameters);
                 } else {
                     sendMessage(event.sender.id, {text: response.result.fulfillment.speech});
@@ -139,7 +139,6 @@ function showodds(recipientId, parameters) {
                     "elements": [{
                         "title":"Premier League, 3rd December",
                         "subtitle":"12:30PM",
-                        "item_url":"https://petersfancybrownhats.com",
                         "image_url": "http://pasteboard.co/4BYTl02ml.jpg",
                         "buttons": [
                             {
@@ -159,33 +158,31 @@ function showodds(recipientId, parameters) {
                             }
                         ]
                     },
-                        {
-                            "title":"November Tests, 3rd December",
-                            "subtitle":"2:30PM",
-                            "item_url":"https://petersfancybrownhats.com",
-                            "image_url": "http://pasteboard.co/4BYqhhTRO.jpg",
-                            "buttons": [
-                                {
-                                    "title": "Place a Bet",
-                                    "type": "postback",
-                                    "payload": "PLACE_BET"
-                                },
-                                {
-                                    "title": "Add to Accumulator",
-                                    "type": "postback",
-                                    "payload": "PLACE_BET"
-                                },
-                                {
-                                    "title": "Update",
-                                    "type": "postback",
-                                    "payload": "PLACE_BET"
-                                }
-                            ]
-                        }]
+                    {
+                        "title":"November Tests, 3rd December",
+                        "subtitle":"2:30PM",
+                        "image_url": "http://pasteboard.co/4BYqhhTRO.jpg",
+                        "buttons": [
+                            {
+                                "title": "Place a Bet",
+                                "type": "postback",
+                                "payload": "PLACE_BET"
+                            },
+                            {
+                                "title": "Add to Accumulator",
+                                "type": "postback",
+                                "payload": "PLACE_BET"
+                            },
+                            {
+                                "title": "Update",
+                                "type": "postback",
+                                "payload": "PLACE_BET"
+                            }
+                        ]
+                    }]
                 }
             }
         };
-        console.log(message);
         sendMessage(recipientId, message);
 
     /*
