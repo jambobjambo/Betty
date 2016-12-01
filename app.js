@@ -50,8 +50,6 @@ app.post('/webhook', function (req, res) {
     var events = req.body.entry[0].messaging;
     for (i = 0; i < events.length; i++) {
         var event = events[i];
-        console.log(event);
-        console.log(event.message);
 
         if (event.message && event.message.text) {
             var request = aiapp.textRequest(event.message.text, {
@@ -139,7 +137,7 @@ function showodds(recipientId, parameters) {
                     "elements": [{
                         "title":"Premier League, 3rd December",
                         "subtitle":"12:30PM",
-                        "image_url": "http://pasteboard.co/4BYTl02ml.jpg",
+                        "image_url": "https://raw.githubusercontent.com/jambobjambo/Betty/master/image/odds2.jpg",
                         "buttons": [
                             {
                                 "title": "Place a Bet",
@@ -161,7 +159,7 @@ function showodds(recipientId, parameters) {
                     {
                         "title":"November Tests, 3rd December",
                         "subtitle":"2:30PM",
-                        "image_url": "http://pasteboard.co/4BYqhhTRO.jpg",
+                        "image_url": "https://raw.githubusercontent.com/jambobjambo/Betty/master/image/odds1.jpg",
                         "buttons": [
                             {
                                 "title": "Place a Bet",
