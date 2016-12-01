@@ -145,17 +145,17 @@ function showodds(recipientId, parameters) {
                             {
                                 "title": "Place a Bet",
                                 "type": "postback",
-                                payload: "PLACE_BET"
+                                "payload": "PLACE_BET"
                             },
                             {
                                 "title": "Add to Accumulator",
                                 "type": "postback",
-                                payload: "ADD_TO_ACC"
+                                "payload": "ADD_TO_ACC"
                             },
                             {
                                 "title": "Update",
                                 "type": "postback",
-                                payload: "UPDATE"
+                                "payload": "UPDATE"
                             }
                         ]
                     },
@@ -168,17 +168,17 @@ function showodds(recipientId, parameters) {
                                 {
                                     "title": "Place a Bet",
                                     "type": "postback",
-                                    payload: "PLACE_BET"
+                                    "payload": "PLACE_BET"
                                 },
                                 {
                                     "title": "Add to Accumulator",
                                     "type": "postback",
-                                    payload: "PLACE_BET"
+                                    "payload": "PLACE_BET"
                                 },
                                 {
                                     "title": "Update",
                                     "type": "postback",
-                                    payload: "PLACE_BET"
+                                    "payload": "PLACE_BET"
                                 }
                             ]
                         }]
