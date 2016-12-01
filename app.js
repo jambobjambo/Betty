@@ -10,7 +10,7 @@ var FB = require('fb');
 FB.setAccessToken(process.env.PAGE_ACCESS_TOKEN);
 
 var apiai = require('apiai');
-var aiapp = apiai("bcbc9b77fbf849c2ba6e785567535c91");
+var aiapp = apiai("ec864f53aefd4b4fbf9c1fd6fefbe256");
 var firebase = require('firebase');
 
 var config = {
@@ -49,61 +49,20 @@ app.post('/webhook', function (req, res) {
         console.log(event.message);
 
         if (event.message && event.message.text) {
-            var ref = firebase.database().ref('user/');
-            ref.child(event.sender.id).once('value', function(snapshot) {
-                var exists = (snapshot.val() !== null);
-                if (exists == false){
-                    Welcome(event.sender.id);
-                }
-                else {
-                    //Message Handler
-                    var request = aiapp.textRequest(event.message.text, {
-                        sessionId: event.sender.id
-                    });
-                    request.on('response', function (response) {
-                    if (event.message.text == "£30" || event.message.text == "£70" || event.message.text == "£125" || event.message.text == "£125+") {
-                        var PriceAdd = firebase.database().ref('user/' + event.sender.id);
-
-                        if(event.message.text == "£30"){
-                            shoppingquery(event.sender.id, response.result.parameters,"p20:25");
-                            PriceAdd.update({
-                                price: "p20:25"
-                            });
-                        }else if(event.message.text == "£70"){
-                            shoppingquery(event.sender.id, response.result.parameters,"p20:29");
-                            PriceAdd.update({
-                                price: "p20:29"
-                            });
-                        }else if(event.message.text == "£125"){
-                            shoppingquery(event.sender.id, response.result.parameters,"p20:33");
-                            PriceAdd.update({
-                                price: "p20:33"
-                            });
-                        }else if(event.message.text == "£125+"){
-                            shoppingquery(event.sender.id, response.result.parameters,"p34:49");
-                            PriceAdd.update({
-                                price: "p34:49"
-                            });
-                        }
-
-                    } else {
-                            if (response.result.action == "shopping_query") {
-                                PriceMessage(event.sender.id, response.result.parameters );
-                            } else {
-                                sendMessage(event.sender.id, {text: response.result.fulfillment.speech});
-                            }
-                    }
-                    });
-                    request.on('error', function (error) {
-                        console.log(error);
-                    });
-                    request.end();
+            var request = aiapp.textRequest(event.message.text, {
+                sessionId: event.sender.id
+            });
+            request.on('response', function (response) {
+                if (response.result.action == "PALCE_BET") {
+                    PriceMessage(event.sender.id, response.result.parameters );
+                } else {
+                    sendMessage(event.sender.id, {text: response.result.fulfillment.speech});
                 }
             });
-        }else if (event.postback) {
-            ViewMore(event.sender.id, "p20:25");
-        }else if (event.message && event.message.attachments){
-            Vision(event.sender.id,event.message.attachments[0].payload.url);
+            request.on('error', function (error) {
+                console.log(error);
+            });
+            request.end();
         }
     }
     res.sendStatus(200);
