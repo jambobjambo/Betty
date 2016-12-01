@@ -137,6 +137,8 @@ function showodds(recipientId, parameters) {
                 "payload": {
                     "template_type": "generic",
                     "elements": [{
+                        "title":"Premier League, 3rd December",
+                        "subtitle":"12:30PM",
                         "image_url": "https://github.com/jambobjambo/Betty/blob/master/image/odds2.jpg",
                         "buttons": [
                             {
@@ -147,16 +149,18 @@ function showodds(recipientId, parameters) {
                             {
                                 "title": "Add to Accumulator",
                                 "type": "postback",
-                                payload: "PLACE_BET"
+                                payload: "ADD_TO_ACC"
                             },
                             {
                                 "title": "Update",
                                 "type": "postback",
-                                payload: "PLACE_BET"
+                                payload: "UPDATE"
                             }
                         ]
                     },
                         {
+                            "title":"November Tests, 3rd December",
+                            "subtitle":"2:30PM",
                             "image_url": "https://github.com/jambobjambo/Betty/blob/master/image/odds1.jpg",
                             "buttons": [
                                 {
