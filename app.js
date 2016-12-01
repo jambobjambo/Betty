@@ -5,6 +5,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var request = require('request');
 var app = express();
+var gm = require('gm');
 
 var FB = require('fb');
 FB.setAccessToken(process.env.PAGE_ACCESS_TOKEN);
@@ -40,6 +41,10 @@ app.get('/webhook', function (req, res) {
     }
 });
 
+app.get('/image', function (req, res) {
+    res.send('Hi');
+});
+
 // handler receiving messages
 app.post('/webhook', function (req, res) {
     var events = req.body.entry[0].messaging;
@@ -54,7 +59,7 @@ app.post('/webhook', function (req, res) {
             });
             request.on('response', function (response) {
                 if (response.result.action == "PALCE_BET") {
-                    PriceMessage(event.sender.id, response.result.parameters );
+                    showodds(event.sender.id, response.result.parameters);
                 } else {
                     sendMessage(event.sender.id, {text: response.result.fulfillment.speech});
                 }
@@ -122,7 +127,7 @@ function introMessage(recipientId, message, NextMessage) {
 }
 
 // send rich message with kitten
-function shoppingquery(recipientId, parameters,price) {
+function showodds(recipientId, parameters) {
     var ref = firebase.database().ref('user/');
     ref.child(recipientId).once('value', function(snapshot) {
         var Query = snapshot.val().query;
