@@ -5,7 +5,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var request = require('request');
 var app = express();
-var gm = require('gm');
+var Jimp = require("jimp");
 
 var FB = require('fb');
 FB.setAccessToken(process.env.PAGE_ACCESS_TOKEN);
@@ -29,7 +29,12 @@ app.listen((process.env.PORT || 8080));
 
 // Server frontpage
 app.get('/', function (req, res) {
-    res.send('This is TestBot Server');
+    var image = new Jimp(780, 410, function (err, image) {
+        image.background('#FF0000');
+        image.write("test.png");
+        res.send('<img src="test.png" />');
+        // this image is 256 x 256, every pixel is set to 0x00000000
+    });
 });
 
 // Facebook Webhook
@@ -126,14 +131,7 @@ function introMessage(recipientId, message, NextMessage) {
 
 // send rich message with kitten
 function showodds(recipientId, parameters) {
-    gm()
-        .in('-page', '+0+0')  // Custom place for each of the images
-        .in('https://raw.githubusercontent.com/jambobjambo/Betty/master/image/odds2.jpg')
-        .in('-page', '+256+0')
-        .in('https://raw.githubusercontent.com/jambobjambo/Betty/master/image/odds2.jpg')
-        .minify()  // Halves the size, 512x512 -> 256x256
-        .mosaic()  // Merges the images as a matrix
-        .write('output.jpg', function (err) {
+
             message = {
                 "attachment": {
                     "type": "template",
@@ -182,34 +180,12 @@ function showodds(recipientId, parameters) {
                                         "payload": "PLACE_BET"
                                     }
                                 ]
-                            },{
-                                "title":"November Tests, 3rd December",
-                                "subtitle":"2:30PM",
-                                "image_url": "output.jpg",
-                                "buttons": [
-                                    {
-                                        "title": "Place a Bet",
-                                        "type": "postback",
-                                        "payload": "PLACE_BET"
-                                    },
-                                    {
-                                        "title": "Add to Accumulator",
-                                        "type": "postback",
-                                        "payload": "PLACE_BET"
-                                    },
-                                    {
-                                        "title": "Update",
-                                        "type": "postback",
-                                        "payload": "PLACE_BET"
-                                    }
-                                ]
                             }]
                     }
                 }
             };
             sendMessage(recipientId, message);
             if (err) console.log(err);
-        });
     /*var ref = firebase.database().ref('user/');
     ref.child(recipientId).once('value', function(snapshot) {
         var Query = snapshot.val().query;*/
