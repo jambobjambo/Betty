@@ -29,8 +29,9 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.listen((process.env.PORT || 8080));
 
-// Server frontpage
-app.get('/', function (req, res) {
+
+
+function createImage(score1, score2, callback){
     Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/background.png", function (err, background) {
         Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/team1.png", function (err, team1) {
             Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/team2.png", function (err, team2) {
@@ -43,10 +44,10 @@ app.get('/', function (req, res) {
                             image.composite(circle1, 30, 310);
                             image.composite(circle2, 450, 310);
                             Jimp.loadFont(Jimp.FONT_SANS_64_WHITE).then(function (font) { // load font from .fnt file
-                                image.print(font, 130, 330, '3:2');
-                                image.print(font, 550, 330, '3:2');
+                                image.print(font, 130, 330, score1);
+                                image.print(font, 550, 330, score2);
                                 image.write("test.png", function () {
-                                    res.send('<img src="test.png" />');
+                                    callback('test.png');
                                 });
                             });
 
@@ -56,7 +57,10 @@ app.get('/', function (req, res) {
             });
         });
     });
-
+}
+// Server frontpage
+app.get('/', function (req, res) {
+    res.send('hey');
 });
 
 // Facebook Webhook
@@ -153,38 +157,16 @@ function introMessage(recipientId, message, NextMessage) {
 
 // send rich message with kitten
 function showodds(recipientId, parameters) {
-
-            message = {
-                "attachment": {
-                    "type": "template",
-                    "payload": {
-                        "template_type": "generic",
-                        "elements": [{
-                            "title":"Premier League, 3rd December",
-                            "subtitle":"12:30PM",
-                            "image_url": "https://raw.githubusercontent.com/jambobjambo/Betty/master/image/odds2.jpg",
-                            "buttons": [
-                                {
-                                    "title": "Place a Bet",
-                                    "type": "postback",
-                                    "payload": "PLACE_BET"
-                                },
-                                {
-                                    "title": "Add to Accumulator",
-                                    "type": "postback",
-                                    "payload": "ADD_TO_ACC"
-                                },
-                                {
-                                    "title": "Update",
-                                    "type": "postback",
-                                    "payload": "UPDATE"
-                                }
-                            ]
-                        },
-                            {
-                                "title":"November Tests, 3rd December",
-                                "subtitle":"2:30PM",
-                                "image_url": "https://raw.githubusercontent.com/jambobjambo/Betty/master/image/odds1.jpg",
+            createImage('3:2','3:2', function(imageName) {
+                message = {
+                    "attachment": {
+                        "type": "template",
+                        "payload": {
+                            "template_type": "generic",
+                            "elements": [{
+                                "title": "Premier League, 3rd December",
+                                "subtitle": "12:30PM",
+                                "image_url": "https://chatbetty.herokuapp.com/imageName",
                                 "buttons": [
                                     {
                                         "title": "Place a Bet",
@@ -194,20 +176,20 @@ function showodds(recipientId, parameters) {
                                     {
                                         "title": "Add to Accumulator",
                                         "type": "postback",
-                                        "payload": "PLACE_BET"
+                                        "payload": "ADD_TO_ACC"
                                     },
                                     {
                                         "title": "Update",
                                         "type": "postback",
-                                        "payload": "PLACE_BET"
+                                        "payload": "UPDATE"
                                     }
                                 ]
                             }]
+                        }
                     }
-                }
-            };
-            sendMessage(recipientId, message);
-            if (err) console.log(err);
+                };
+                sendMessage(recipientId, message);
+            });
     /*var ref = firebase.database().ref('user/');
     ref.child(recipientId).once('value', function(snapshot) {
         var Query = snapshot.val().query;*/
