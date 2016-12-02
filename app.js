@@ -15,11 +15,11 @@ var aiapp = apiai("ec864f53aefd4b4fbf9c1fd6fefbe256");
 var firebase = require('firebase');
 
 var config = {
-    apiKey: "AIzaSyDSWF3sW_GqpnVLWOdPLkFJyogs90wlExg",
-    authDomain: "flashybot-e7a61.firebaseapp.com",
-    databaseURL: "https://flashybot-e7a61.firebaseio.com",
-    storageBucket: "flashybot-e7a61.appspot.com",
-    messagingSenderId: "802553604379"
+    apiKey: "AIzaSyDAjJNh-YSUyDz5D675BrQoifhQ0bfDebc",
+    authDomain: "chatbetty-76e6f.firebaseapp.com",
+    databaseURL: "https://chatbetty-76e6f.firebaseio.com",
+    storageBucket: "chatbetty-76e6f.appspot.com",
+    messagingSenderId: "575665251318"
 };
 firebase.initializeApp(config);
 
@@ -126,62 +126,94 @@ function introMessage(recipientId, message, NextMessage) {
 
 // send rich message with kitten
 function showodds(recipientId, parameters) {
+    gm()
+        .in('-page', '+0+0')  // Custom place for each of the images
+        .in('https://raw.githubusercontent.com/jambobjambo/Betty/master/image/odds2.jpg')
+        .in('-page', '+256+0')
+        .in('https://raw.githubusercontent.com/jambobjambo/Betty/master/image/odds2.jpg')
+        .minify()  // Halves the size, 512x512 -> 256x256
+        .mosaic()  // Merges the images as a matrix
+        .write('output.jpg', function (err) {
+            message = {
+                "attachment": {
+                    "type": "template",
+                    "payload": {
+                        "template_type": "generic",
+                        "elements": [{
+                            "title":"Premier League, 3rd December",
+                            "subtitle":"12:30PM",
+                            "image_url": "https://raw.githubusercontent.com/jambobjambo/Betty/master/image/odds2.jpg",
+                            "buttons": [
+                                {
+                                    "title": "Place a Bet",
+                                    "type": "postback",
+                                    "payload": "PLACE_BET"
+                                },
+                                {
+                                    "title": "Add to Accumulator",
+                                    "type": "postback",
+                                    "payload": "ADD_TO_ACC"
+                                },
+                                {
+                                    "title": "Update",
+                                    "type": "postback",
+                                    "payload": "UPDATE"
+                                }
+                            ]
+                        },
+                            {
+                                "title":"November Tests, 3rd December",
+                                "subtitle":"2:30PM",
+                                "image_url": "https://raw.githubusercontent.com/jambobjambo/Betty/master/image/odds1.jpg",
+                                "buttons": [
+                                    {
+                                        "title": "Place a Bet",
+                                        "type": "postback",
+                                        "payload": "PLACE_BET"
+                                    },
+                                    {
+                                        "title": "Add to Accumulator",
+                                        "type": "postback",
+                                        "payload": "PLACE_BET"
+                                    },
+                                    {
+                                        "title": "Update",
+                                        "type": "postback",
+                                        "payload": "PLACE_BET"
+                                    }
+                                ]
+                            },{
+                                "title":"November Tests, 3rd December",
+                                "subtitle":"2:30PM",
+                                "image_url": "output.jpg",
+                                "buttons": [
+                                    {
+                                        "title": "Place a Bet",
+                                        "type": "postback",
+                                        "payload": "PLACE_BET"
+                                    },
+                                    {
+                                        "title": "Add to Accumulator",
+                                        "type": "postback",
+                                        "payload": "PLACE_BET"
+                                    },
+                                    {
+                                        "title": "Update",
+                                        "type": "postback",
+                                        "payload": "PLACE_BET"
+                                    }
+                                ]
+                            }]
+                    }
+                }
+            };
+            sendMessage(recipientId, message);
+            if (err) console.log(err);
+        });
     /*var ref = firebase.database().ref('user/');
     ref.child(recipientId).once('value', function(snapshot) {
         var Query = snapshot.val().query;*/
-        message = {
-            "attachment": {
-                "type": "template",
-                "payload": {
-                    "template_type": "generic",
-                    "elements": [{
-                        "title":"Premier League, 3rd December",
-                        "subtitle":"12:30PM",
-                        "image_url": "https://raw.githubusercontent.com/jambobjambo/Betty/master/image/odds2.jpg",
-                        "buttons": [
-                            {
-                                "title": "Place a Bet",
-                                "type": "postback",
-                                "payload": "PLACE_BET"
-                            },
-                            {
-                                "title": "Add to Accumulator",
-                                "type": "postback",
-                                "payload": "ADD_TO_ACC"
-                            },
-                            {
-                                "title": "Update",
-                                "type": "postback",
-                                "payload": "UPDATE"
-                            }
-                        ]
-                    },
-                    {
-                        "title":"November Tests, 3rd December",
-                        "subtitle":"2:30PM",
-                        "image_url": "https://raw.githubusercontent.com/jambobjambo/Betty/master/image/odds1.jpg",
-                        "buttons": [
-                            {
-                                "title": "Place a Bet",
-                                "type": "postback",
-                                "payload": "PLACE_BET"
-                            },
-                            {
-                                "title": "Add to Accumulator",
-                                "type": "postback",
-                                "payload": "PLACE_BET"
-                            },
-                            {
-                                "title": "Update",
-                                "type": "postback",
-                                "payload": "PLACE_BET"
-                            }
-                        ]
-                    }]
-                }
-            }
-        };
-        sendMessage(recipientId, message);
+
 
     /*
     });*/
