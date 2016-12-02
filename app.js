@@ -30,9 +30,8 @@ app.listen((process.env.PORT || 8080));
 // Server frontpage
 app.get('/', function (req, res) {
     var image = new Jimp(780, 410, function (err, image) {
-        image.background('#FF0000');
+        image.background('rgb(255, 0, 0)');
         image.write("test.png");
-        console.log('here');
         res.send('<img src="test.png" />');
         // this image is 256 x 256, every pixel is set to 0x00000000
     });
