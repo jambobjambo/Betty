@@ -14,7 +14,7 @@ var x = Xray();
 
 
 var FB = require('fb');
-FB.setAccessToken('EAAZAlZAHD7JP8BAPxpjAKYN2y8ZC3v9eZBImK1lJ2tkWXaMMBL7PEhayWZB3f676J70lxSBs19tZCVFgwEhIVsYSRwKx71J8yV48sGsgZBZAv7tFkDh2Fkk0XZA7PWqw4ZAqMTSZBZCYM8euNEZCQI95ySg9x1OEhnNKElo9OXfAS6Keq0wZDZD');
+FB.setAccessToken(process.env.PAGE_ACCESS_TOKEN);
 
 var apiai = require('apiai');
 var aiapp = apiai("ec864f53aefd4b4fbf9c1fd6fefbe256");
@@ -170,7 +170,7 @@ function introMessage(recipientId, message, NextMessage) {
         } else {
             request({
                 url: 'https://graph.facebook.com/v2.6/me/messages',
-                qs: {access_token: 'EAAZAlZAHD7JP8BAPxpjAKYN2y8ZC3v9eZBImK1lJ2tkWXaMMBL7PEhayWZB3f676J70lxSBs19tZCVFgwEhIVsYSRwKx71J8yV48sGsgZBZAv7tFkDh2Fkk0XZA7PWqw4ZAqMTSZBZCYM8euNEZCQI95ySg9x1OEhnNKElo9OXfAS6Keq0wZDZD'},
+                qs: {access_token: process.env.PAGE_ACCESS_TOKEN},
                 method: 'POST',
                 json: {
                     recipient: {id: recipientId},
