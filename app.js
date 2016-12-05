@@ -230,19 +230,18 @@ function showodds(recipientId, parameters) {
         GetOddsCurrent('football', function(Match){
             createImage(Match, function(filename, Match){
                 messageTemp.push ('{"title":' + Match[0] + ' v ' + Match[1] + ',"subtitle":' + Match[2] + ',"image_url": "https://chatbettyeu.herokuapp.com/"' + filename + ',"buttons": [{"title": "Place a Bet","type": "postback","payload": "PLACE_BET"},{"title": "Add to Accumulator","type": "postback","payload": "ADD_TO_ACC"},{"title": "Update","type": "postback","payload": "UPDATE"}]}');
-                console.log(messageTemp);
-                if(messageTemp.length == 10){
+
                     message = {
                         "attachment": {
                             "type": "template",
                             "payload": {
                                 "template_type": "generic",
-                                "elements": [ messageTemp[0] + ','+ messageTemp[1] + ','+ messageTemp[2]+ ','+ messageTemp[3]+ ','+ messageTemp[4]+ ','+ messageTemp[5]+ ','+ messageTemp[6]+ ','+ messageTemp[7]+ ','+ messageTemp[8]+ ','+ messageTemp[9]]
+                                "elements": [ messageTemp[0]]
                             }
                         }
                     };
                     sendMessage(recipientId, message);
-                }
+
             });
         });
 
