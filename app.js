@@ -201,7 +201,7 @@ function showodds(recipientId, parameters) {
                             "elements": [{
                                 "title": "Premier League, 3rd December",
                                 "subtitle": "12:30PM",
-                                "image_url": "https://chatbetty.herokuapp.com/" + imageName,
+                                "image_url": "https://chatbettyeu.herokuapp.com/" + imageName,
                                 "buttons": [
                                     {
                                         "title": "Place a Bet",
