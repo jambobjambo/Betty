@@ -50,13 +50,13 @@ function createImage(score1, score2, callback){
                     Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/Right.png", function (err, circle2) {
                         var image = new Jimp(780, 410, function (err, image) {
                             image.composite(background, 0, 0);
-                            image.composite(team1, 30, 15);
-                            image.composite(team2, 450, 15);
                             image.composite(circle1, 0, 210);
                             image.composite(circle2, 480, 210);
+                            image.composite(team1, 30, 15);
+                            image.composite(team2, 450, 15);
                             Jimp.loadFont(Jimp.FONT_SANS_64_WHITE).then(function (font) { // load font from .fnt file
-                                image.print(font, 130, 330, score1);
-                                image.print(font, 550, 330, score2);
+                                image.print(font, 30, 330, score1);
+                                image.print(font, 600, 330, score2);
                                 image.write(FileName + ".png", function () {
                                     callback(FileName + '.png');
                                 });
