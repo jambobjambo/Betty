@@ -75,6 +75,7 @@ function GetOddsCurrent(teams, callback){
                 x('https://www.betfair.com/sport/football', ['.ui-runner-price'])(function (err, odds) {
                     var Match = [];
                     for(var index = 0; index < 10; index++){
+                        console.log(Match);
                         var HomeTeam = homeTeams[index].replace("\n","");
                         var AwayTeam = awayTeam[index].replace("\n","");
                         var Date = date[index].replace("\n","");
