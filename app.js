@@ -42,6 +42,7 @@ var DEFAULT_JSON_FORMAT = '\t';
 
 function createImage(score1, score2, callback){
     var FileName = Math.floor((Math.random() * 9999999) + 1);
+    console.log(FileName);
     Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/background.png", function (err, background) {
         Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/team1.png", function (err, team1) {
             Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/team2.png", function (err, team2) {
