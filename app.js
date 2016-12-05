@@ -40,9 +40,8 @@ var ssid = 'mS5XUYJ9mBvSnumiuD7wogYT5zSn2JUKT3qQMQDaMt8=';
 var DEFAULT_ENCODING = 'utf-8';
 var DEFAULT_JSON_FORMAT = '\t';
 
-function createImage(score1, score2, callback){
+function createImage(Match, callback){
     var FileName = Math.floor((Math.random() * 9999999) + 1);
-    console.log(FileName);
     Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/background.png", function (err, background) {
         Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/team1.png", function (err, team1) {
             Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/team2.png", function (err, team2) {
@@ -55,10 +54,10 @@ function createImage(score1, score2, callback){
                             image.composite(team1, 30, 15);
                             image.composite(team2, 450, 15);
                             Jimp.loadFont(Jimp.FONT_SANS_64_WHITE).then(function (font) { // load font from .fnt file
-                                image.print(font, 30, 330, score1);
-                                image.print(font, 600, 330, score2);
+                                image.print(font, 30, 330, Match[3]);
+                                image.print(font, 600, 330, Match[4]);
                                 image.write(FileName + ".png", function () {
-                                    callback(FileName + '.png');
+                                    callback(FileName + '.png', Match);
                                 });
                             });
                         });
@@ -69,9 +68,31 @@ function createImage(score1, score2, callback){
     });
 }
 
+function GetOddsCurrent(teams, callback){
+    x('https://www.betfair.com/sport/football', ['.home-team-name'])(function (err, homeTeams) {
+        x('https://www.betfair.com/sport/football', ['.away-team-name'])(function (err, awayTeam) {
+            x('https://www.betfair.com/sport/football', ['.date'])(function (err, date) {
+                x('https://www.betfair.com/sport/football', ['.ui-runner-price'])(function (err, odds) {
+                    var Match = [];
+                    for(var index = 0; index < 10; index++){
+                        var HomeTeam = homeTeams[index].replace("\n","");
+                        var AwayTeam = awayTeam[index].replace("\n","");
+                        var Date = date[index].replace("\n","");
+                        Match.push(HomeTeam);
+                        Match.push(AwayTeam);
+                        Match.push(Date);
+                        Match.push(odds[index * 3]);
+                        Match.push(odds[index * 3 + 2]);
+                        callback(Match);
+                    }
+                });
+            });
+        });
+    });
+}
 
 // Server frontpage
-function GetOdss(teams, callback){
+function GetOdds(teams, callback){
     Betfair.login({
         applicationKey: 'KpCoeurXPW5aI2mF',
         username: 'agwelford',
@@ -86,16 +107,29 @@ function GetOdss(teams, callback){
 
         // get markets matchOdss, over/Under 0.5 from event 'Sunderland v Liverpool'
         betfair.betting.listEvents({
-            textQuery: 'Arsenal v Stoke'
+            textQuery: 'english premier league'
         }, function (err, res) {
-            var event = res[0].event.id;
-            x('https://www.betfair.com/sport/football/event?eventId=' + event, ['.com-bet-button'])(function(err, odds) {
-                callback(odds);
-            })
+            var odds = res.length;
+            var start = 0;
+            var oddsList;
+            while(odds > start) {
+                var event = res[start].event.id;
+                x('https://www.betfair.com/sport/football/event?eventId=' + event, ['.com-bet-button'])(function (err, odds) {
+                    oddsList.push(odds);
+                    console.log('got here');
+                    start += 1;
+                })
+            }
+            if(odds == start){
+                callback(oddsList);
+            }
         });
     });
 
 }
+
+
+
 
 // Facebook Webhook
 app.get('/webhook', function (req, res) {
@@ -191,41 +225,25 @@ function introMessage(recipientId, message, NextMessage) {
 
 // send rich message with kitten
 function showodds(recipientId, parameters) {
-        GetOdss('Arsenal v Stoke', function(odds) {
-            createImage(odds[0], odds[2], function (imageName) {
-                message = {
-                    "attachment": {
-                        "type": "template",
-                        "payload": {
-                            "template_type": "generic",
-                            "elements": [{
-                                "title": "Premier League, 3rd December",
-                                "subtitle": "12:30PM",
-                                "image_url": "https://chatbettyeu.herokuapp.com/" + imageName,
-                                "buttons": [
-                                    {
-                                        "title": "Place a Bet",
-                                        "type": "postback",
-                                        "payload": "PLACE_BET"
-                                    },
-                                    {
-                                        "title": "Add to Accumulator",
-                                        "type": "postback",
-                                        "payload": "ADD_TO_ACC"
-                                    },
-                                    {
-                                        "title": "Update",
-                                        "type": "postback",
-                                        "payload": "UPDATE"
-                                    }
-                                ]
-                            }]
-                        }
-                    }
-                };
-                sendMessage(recipientId, message);
+    sendMessage(recipientId, {text: 'Let me have a look for you :)'});
+        var messageTemp = [];
+        GetOddsCurrent('football', function(Match){
+            createImage(Match, function(filename, Match){
+                messageTemp.push ('{"title":' + Match[0] + ' v ' + Match[1] + ',"subtitle":' + Match[2] + ',"image_url": "https://chatbettyeu.herokuapp.com/"' + filename + ',"buttons": [{"title": "Place a Bet","type": "postback","payload": "PLACE_BET"},{"title": "Add to Accumulator","type": "postback","payload": "ADD_TO_ACC"},{"title": "Update","type": "postback","payload": "UPDATE"}]}');
             });
         });
+        if(image.length == 10){
+            message = {
+                "attachment": {
+                    "type": "template",
+                    "payload": {
+                        "template_type": "generic",
+                        "elements": [ messageTemp[0] + ','+ messageTemp[1] + ','+ messageTemp[2]+ ','+ messageTemp[3]+ ','+ messageTemp[4]+ ','+ messageTemp[5]+ ','+ messageTemp[6]+ ','+ messageTemp[7]+ ','+ messageTemp[8]+ ','+ messageTemp[9]]
+                    }
+                }
+            };
+            sendMessage(recipientId, message);
+        }
     /*var ref = firebase.database().ref('user/');
     ref.child(recipientId).once('value', function(snapshot) {
         var Query = snapshot.val().query;*/
