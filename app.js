@@ -46,14 +46,14 @@ function createImage(score1, score2, callback){
     Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/background.png", function (err, background) {
         Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/team1.png", function (err, team1) {
             Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/team2.png", function (err, team2) {
-                Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/circle1.png", function (err, circle1) {
-                    Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/circle2.png", function (err, circle2) {
+                Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/semiLeft.png", function (err, circle1) {
+                    Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/semiRight.png", function (err, circle2) {
                         var image = new Jimp(780, 410, function (err, image) {
                             image.composite(background, 0, 0);
                             image.composite(team1, 30, 15);
                             image.composite(team2, 450, 15);
-                            image.composite(circle1, 30, 310);
-                            image.composite(circle2, 450, 310);
+                            image.composite(circle1, 0, 310);
+                            image.composite(circle2, 630, 310);
                             Jimp.loadFont(Jimp.FONT_SANS_64_WHITE).then(function (font) { // load font from .fnt file
                                 image.print(font, 130, 330, score1);
                                 image.print(font, 550, 330, score2);
