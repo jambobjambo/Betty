@@ -41,6 +41,7 @@ var DEFAULT_ENCODING = 'utf-8';
 var DEFAULT_JSON_FORMAT = '\t';
 
 function createImage(score1, score2, callback){
+    var FileName = Math.floor((Math.random() * 9999999) + 1);
     Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/background.png", function (err, background) {
         Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/team1.png", function (err, team1) {
             Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/team2.png", function (err, team2) {
@@ -55,8 +56,8 @@ function createImage(score1, score2, callback){
                             Jimp.loadFont(Jimp.FONT_SANS_64_WHITE).then(function (font) { // load font from .fnt file
                                 image.print(font, 130, 330, score1);
                                 image.print(font, 550, 330, score2);
-                                image.write("test.png", function () {
-                                    callback('test.png');
+                                image.write(FileName + ".png", function () {
+                                    callback(FileName + '.png');
                                 });
                             });
                         });
