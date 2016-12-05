@@ -8,6 +8,10 @@ var app = express();
 var Jimp = require("jimp");
 var path = require('path');
 app.use(express.static(path.join(__dirname)));
+var https = require('https');
+var Xray = require('x-ray');
+var x = Xray();
+
 
 var FB = require('fb');
 FB.setAccessToken('EAAZAlZAHD7JP8BAPxpjAKYN2y8ZC3v9eZBImK1lJ2tkWXaMMBL7PEhayWZB3f676J70lxSBs19tZCVFgwEhIVsYSRwKx71J8yV48sGsgZBZAv7tFkDh2Fkk0XZA7PWqw4ZAqMTSZBZCYM8euNEZCQI95ySg9x1OEhnNKElo9OXfAS6Keq0wZDZD');
@@ -29,7 +33,12 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.listen((process.env.PORT || 8080));
 
+var Betfair = require('betfair-api-ng');
 
+var appkey = 'KpCoeurXPW5aI2mF';
+var ssid = 'mS5XUYJ9mBvSnumiuD7wogYT5zSn2JUKT3qQMQDaMt8=';
+var DEFAULT_ENCODING = 'utf-8';
+var DEFAULT_JSON_FORMAT = '\t';
 
 function createImage(score1, score2, callback){
     Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/background.png", function (err, background) {
@@ -50,7 +59,6 @@ function createImage(score1, score2, callback){
                                     callback('test.png');
                                 });
                             });
-
                         });
                     });
                 });
@@ -58,10 +66,34 @@ function createImage(score1, score2, callback){
         });
     });
 }
+
+
 // Server frontpage
-app.get('/', function (req, res) {
-    res.send('hey');
-});
+function GetOdss(teams, callback){
+    Betfair.login({
+        applicationKey: 'KpCoeurXPW5aI2mF',
+        username: 'agwelford',
+        password: 'Addington40',
+
+        certFile: 'ChatBetty.crt',
+        keyFile: 'client.key'
+    }, function (err, betfair) {
+        if (err) {
+            return console.error(err);
+        }
+
+        // get markets matchOdss, over/Under 0.5 from event 'Sunderland v Liverpool'
+        betfair.betting.listEvents({
+            textQuery: 'Arsenal v Stoke'
+        }, function (err, res) {
+            var event = res[0].event.id;
+            x('https://www.betfair.com/sport/football/event?eventId=' + event, ['.com-bet-button'])(function(err, odds) {
+                callback(odds);
+            })
+        });
+    });
+
+}
 
 // Facebook Webhook
 app.get('/webhook', function (req, res) {
@@ -157,7 +189,8 @@ function introMessage(recipientId, message, NextMessage) {
 
 // send rich message with kitten
 function showodds(recipientId, parameters) {
-            createImage('3:2','3:2', function(imageName) {
+        GetOdss('Arsenal v Stoke', function(odds) {
+            createImage(odds[0], odds[2], function (imageName) {
                 message = {
                     "attachment": {
                         "type": "template",
@@ -190,6 +223,7 @@ function showodds(recipientId, parameters) {
                 };
                 sendMessage(recipientId, message);
             });
+        });
     /*var ref = firebase.database().ref('user/');
     ref.child(recipientId).once('value', function(snapshot) {
         var Query = snapshot.val().query;*/
