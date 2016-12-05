@@ -52,8 +52,8 @@ function createImage(score1, score2, callback){
                             image.composite(background, 0, 0);
                             image.composite(team1, 30, 15);
                             image.composite(team2, 450, 15);
-                            image.composite(circle1, 0, 310);
-                            image.composite(circle2, 630, 310);
+                            image.composite(circle1, 0, 210);
+                            image.composite(circle2, 480, 210);
                             Jimp.loadFont(Jimp.FONT_SANS_64_WHITE).then(function (font) { // load font from .fnt file
                                 image.print(font, 130, 330, score1);
                                 image.print(font, 550, 330, score2);
