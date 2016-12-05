@@ -41,23 +41,29 @@ var DEFAULT_ENCODING = 'utf-8';
 var DEFAULT_JSON_FORMAT = '\t';
 
 function createImage(Match, callback){
-    var FileName = Math.floor((Math.random() * 9999999) + 1);
-    Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/background.png", function (err, background) {
-        Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/team1.png", function (err, team1) {
-            Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/team2.png", function (err, team2) {
-                Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/Left.png", function (err, circle1) {
-                    Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/Right.png", function (err, circle2) {
-                        var image = new Jimp(780, 410, function (err, image) {
-                            image.composite(background, 0, 0);
-                            image.composite(circle1, 0, 210);
-                            image.composite(circle2, 480, 210);
-                            image.composite(team1, 30, 15);
-                            image.composite(team2, 450, 15);
-                            Jimp.loadFont(Jimp.FONT_SANS_64_WHITE).then(function (font) { // load font from .fnt file
-                                image.print(font, 30, 330, Match[3]);
-                                image.print(font, 600, 330, Match[4]);
-                                image.write(FileName + ".png", function () {
-                                    callback(FileName + '.png', Match);
+    var filenames = [];
+    for(var index = 0; index < 10; index++) {
+        var FileName = Math.floor((Math.random() * 9999999) + 1);
+        Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/background.png", function (err, background) {
+            Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/team1.png", function (err, team1) {
+                Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/team2.png", function (err, team2) {
+                    Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/Left.png", function (err, circle1) {
+                        Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/Right.png", function (err, circle2) {
+                            var image = new Jimp(780, 410, function (err, image) {
+                                image.composite(background, 0, 0);
+                                image.composite(circle1, 0, 210);
+                                image.composite(circle2, 480, 210);
+                                image.composite(team1, 30, 15);
+                                image.composite(team2, 450, 15);
+                                Jimp.loadFont(Jimp.FONT_SANS_64_WHITE).then(function (font) { // load font from .fnt file
+                                    image.print(font, 30, 330, Match[index*3]);
+                                    image.print(font, 600, 330, Match[index*3 + 2]);
+                                    image.write(FileName + ".png", function () {
+                                        filenames.push (FileName + '.png');
+                                        if(index == 9) {
+                                            callback(filenames, Match);
+                                        }
+                                    });
                                 });
                             });
                         });
@@ -65,7 +71,7 @@ function createImage(Match, callback){
                 });
             });
         });
-    });
+    }
 }
 
 function GetOddsCurrent(teams, callback){
@@ -84,7 +90,9 @@ function GetOddsCurrent(teams, callback){
                         Match.push(Date);
                         Match.push(odds[index * 3]);
                         Match.push(odds[index * 3 + 2]);
-                        callback(Match);
+                        if(index == 9) {
+                            callback(Match);
+                        }
                     }
                 });
             });
@@ -231,20 +239,22 @@ function showodds(recipientId, parameters) {
         GetOddsCurrent('football', function(Match){
             createImage(Match, function(filename, Match){
                 console.log(Match[0]);
-            //messageTemp.push ('{"title":' + Match[0] + ' v ' + Match[1] + ', "subtitle":' + Match[2] + ',"image_url": "https://chatbettyeu.herokuapp.com/"' + filename + ',"buttons": [{"title": "Place a Bet","type": "postback","payload": "PLACE_BET"},{"title": "Add to Accumulator","type": "postback","payload": "ADD_TO_ACC"},{"title": "Update","type": "postback","payload": "UPDATE"}]}');
-                messageTemp.push('{"title": "' + Match[0].substring(0, Match[0].length - 1) + ' v ' + Match[1].substring(0, Match[1].length - 1) + '", "subtitle": "' + Match[2].substring(0, Match[2].length - 1) + '", "image_url": "' + "https://chatbettyeu.herokuapp.com/" + filename + '", "buttons":[{"title": "Place a Bet", "type": "postback", "payload": "PLACE_BET"},{"title": "Add to Accumulator", "type": "postback", "payload": "PLACE_BET"},{"title": "Update", "type": "postback", "payload": "PLACE_BET"}]} ');
-                if(messageTemp.length == 10) {
+                for(var index = 0; index < 10; index++) {
+                    //messageTemp.push ('{"title":' + Match[0] + ' v ' + Match[1] + ', "subtitle":' + Match[2] + ',"image_url": "https://chatbettyeu.herokuapp.com/"' + filename + ',"buttons": [{"title": "Place a Bet","type": "postback","payload": "PLACE_BET"},{"title": "Add to Accumulator","type": "postback","payload": "ADD_TO_ACC"},{"title": "Update","type": "postback","payload": "UPDATE"}]}');
+                    messageTemp.push('{"title": "' + Match[index * 5].substring(0, Match[index * 5].length - 1) + ' v ' + Match[index*5 + 1].substring(0, Match[index*5+1].length - 1) + '", "subtitle": "' + Match[index*5 + 2].substring(0, Match[index*5 +2].length - 1) + '", "image_url": "' + "https://chatbettyeu.herokuapp.com/" + filename[index] + '", "buttons":[{"title": "Place a Bet", "type": "postback", "payload": "PLACE_BET"},{"title": "Add to Accumulator", "type": "postback", "payload": "PLACE_BET"},{"title": "Update", "type": "postback", "payload": "PLACE_BET"}]} ');
+                    if (index == 9) {
 
-                    message = {
-                        "attachment": {
-                            "type": "template",
-                            "payload": {
-                                "template_type": "generic",
-                                "elements": [messageTemp[0] , messageTemp[1] , messageTemp[2] , messageTemp[3] , messageTemp[4] , messageTemp[5] , messageTemp[6] , messageTemp[7] , messageTemp[8] , messageTemp[9] ]
+                        message = {
+                            "attachment": {
+                                "type": "template",
+                                "payload": {
+                                    "template_type": "generic",
+                                    "elements": [messageTemp[0], messageTemp[1], messageTemp[2], messageTemp[3], messageTemp[4], messageTemp[5], messageTemp[6], messageTemp[7], messageTemp[8], messageTemp[9]]
+                                }
                             }
-                        }
-                    };
-                    sendMessage(recipientId, message);
+                        };
+                        sendMessage(recipientId, message);
+                    }
                 }
             });
         });
