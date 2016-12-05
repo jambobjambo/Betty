@@ -230,7 +230,7 @@ function showodds(recipientId, parameters) {
         GetOddsCurrent('football', function(Match){
             createImage(Match, function(filename, Match){
             //messageTemp.push ('{"title":' + Match[0] + ' v ' + Match[1] + ', "subtitle":' + Match[2] + ',"image_url": "https://chatbettyeu.herokuapp.com/"' + filename + ',"buttons": [{"title": "Place a Bet","type": "postback","payload": "PLACE_BET"},{"title": "Add to Accumulator","type": "postback","payload": "ADD_TO_ACC"},{"title": "Update","type": "postback","payload": "UPDATE"}]}');
-                messageTemp.push('{title: ' + Match[0].substring(0, Match[0].length - 1) + ' v ' + Match[1].substring(0, Match[1].length - 1) + ', subtitle: ' + Match[2].substring(0, Match[2].length - 1) + ',image_url: "https://chatbettyeu.herokuapp.com/"' + filename + ', buttons:[{title: "Place a Bet", type: "postback", payload: "PLACE_BET"},{title: "Add to Accumulator", type: "postback", payload: "PLACE_BET"},{title: "Update", type: "postback", payload: "PLACE_BET"}]} ');
+                messageTemp.push('{"title": ' + Match[0].substring(0, Match[0].length - 1) + ' v ' + Match[1].substring(0, Match[1].length - 1) + ', "subtitle": ' + Match[2].substring(0, Match[2].length - 1) + ', "image_url": "https://chatbettyeu.herokuapp.com/"' + filename + ', "buttons":[{"title": "Place a Bet", "type": "postback", "payload": "PLACE_BET"},{"title": "Add to Accumulator", "type": "postback", "payload": "PLACE_BET"},{"title": "Update", "type": "postback", "payload": "PLACE_BET"}]} ');
                 if(messageTemp.length == 10) {
                     console.log(messageTemp[0]);
                     message = {
@@ -238,8 +238,7 @@ function showodds(recipientId, parameters) {
                             "type": "template",
                             "payload": {
                                 "template_type": "generic",
-                                "elements": [
-
+                                "elements": [ messageTemp[0]
                                 ]
                             }
                         }
