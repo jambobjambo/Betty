@@ -202,25 +202,23 @@ function showodds(recipientId, parameters) {
     sendMessage(recipientId, {text: 'Let me have a look for you :)'});
     var messageTemp = [];
     GetOddsCurrent('football', function(Match){
-        console.log('um');
-        var pointer = 0;
-        while(pointer < 5) {
-            //messageTemp.push ('{"title":' + Match[0] + ' v ' + Match[1] + ', "subtitle":' + Match[2] + ',"image_url": "https://chatbettyeu.herokuapp.com/"' + filename + ',"buttons": [{"title": "Place a Bet","type": "postback","payload": "PLACE_BET"},{"title": "Add to Accumulator","type": "postback","payload": "ADD_TO_ACC"},{"title": "Update","type": "postback","payload": "UPDATE"}]}');
-            messageTemp.push('{"title": "' + Match[pointer * 6].substring(0, Match[pointer * 6].length - 1) + ' v ' + Match[pointer*6 + 1].substring(0, Match[pointer*6+1].length - 1) + '", "subtitle": "' + Match[pointer*6 + 2].substring(0, Match[pointer*6 +2].length - 1) + '", "image_url": "' + "https://chatbettyeu.herokuapp.com/" + Match[pointer*6 + 5] + '", "buttons":[{"title": "Place a Bet", "type": "postback", "payload": "PLACE_BET"},{"title": "Add to Accumulator", "type": "postback", "payload": "ADD_TO_ACC"},{"title": "Update", "type": "postback", "payload": "UPDATE"}]} ');
-            pointer += 1;
-            if (pointer == 5) {
-                console.log(messageTemp);
-                sendMessage(recipientId, {
-                    "attachment": {
-                        "type": "template",
-                        "payload": {
-                            "template_type": "generic",
-                            "elements": [messageTemp[0], messageTemp[1], messageTemp[2], messageTemp[3], messageTemp[4], messageTemp[5], messageTemp[6], messageTemp[7], messageTemp[8], messageTemp[9]]
-                        }
-                    }
-                });
+        //messageTemp.push ('{"title":' + Match[0] + ' v ' + Match[1] + ', "subtitle":' + Match[2] + ',"image_url": "https://chatbettyeu.herokuapp.com/"' + filename + ',"buttons": [{"title": "Place a Bet","type": "postback","payload": "PLACE_BET"},{"title": "Add to Accumulator","type": "postback","payload": "ADD_TO_ACC"},{"title": "Update","type": "postback","payload": "UPDATE"}]}');
+        var message1 = '{"title": "' + Match[0].substring(0, Match[0].length - 1) + ' v ' + Match[1].substring(0, Match[1].length - 1) + '", "subtitle": "' + Match[2].substring(0, Match[2].length - 1) + '", "image_url": "' + "https://chatbettyeu.herokuapp.com/" + Match[5] + '", "buttons":[{"title": "Place a Bet", "type": "postback", "payload": "PLACE_BET"},{"title": "Add to Accumulator", "type": "postback", "payload": "ADD_TO_ACC"},{"title": "Update", "type": "postback", "payload": "UPDATE"}]} ';
+        var message2 = '{"title": "' + Match[6].substring(0, Match[6].length - 1) + ' v ' + Match[7].substring(0, Match[7].length - 1) + '", "subtitle": "' + Match[8].substring(0, Match[8].length - 1) + '", "image_url": "' + "https://chatbettyeu.herokuapp.com/" + Match[11] + '", "buttons":[{"title": "Place a Bet", "type": "postback", "payload": "PLACE_BET"},{"title": "Add to Accumulator", "type": "postback", "payload": "ADD_TO_ACC"},{"title": "Update", "type": "postback", "payload": "UPDATE"}]} ';
+        var message3 = '{"title": "' + Match[12].substring(0, Match[12].length - 1) + ' v ' + Match[13].substring(0, Match[13].length - 1) + '", "subtitle": "' + Match[14].substring(0, Match[14].length - 1) + '", "image_url": "' + "https://chatbettyeu.herokuapp.com/" + Match[17] + '", "buttons":[{"title": "Place a Bet", "type": "postback", "payload": "PLACE_BET"},{"title": "Add to Accumulator", "type": "postback", "payload": "ADD_TO_ACC"},{"title": "Update", "type": "postback", "payload": "UPDATE"}]} ';
+        var message4 = '{"title": "' + Match[18].substring(0, Match[18].length - 1) + ' v ' + Match[19].substring(0, Match[19].length - 1) + '", "subtitle": "' + Match[20].substring(0, Match[20].length - 1) + '", "image_url": "' + "https://chatbettyeu.herokuapp.com/" + Match[23] + '", "buttons":[{"title": "Place a Bet", "type": "postback", "payload": "PLACE_BET"},{"title": "Add to Accumulator", "type": "postback", "payload": "ADD_TO_ACC"},{"title": "Update", "type": "postback", "payload": "UPDATE"}]} ';
+        var message5 = '{"title": "' + Match[24].substring(0, Match[24].length - 1) + ' v ' + Match[25].substring(0, Match[25].length - 1) + '", "subtitle": "' + Match[26].substring(0, Match[26].length - 1) + '", "image_url": "' + "https://chatbettyeu.herokuapp.com/" + Match[29] + '", "buttons":[{"title": "Place a Bet", "type": "postback", "payload": "PLACE_BET"},{"title": "Add to Accumulator", "type": "postback", "payload": "ADD_TO_ACC"},{"title": "Update", "type": "postback", "payload": "UPDATE"}]} ';
+
+        message = {
+            "attachment": {
+                "type": "template",
+                "payload": {
+                    "template_type": "generic",
+                    "elements": [message1, message2, message3, message4, message5]
+                }
             }
-        }
+        };
+        sendMessage(recipientId, message);
     });
 
     /*var ref = firebase.database().ref('user/');
