@@ -43,7 +43,7 @@ var DEFAULT_JSON_FORMAT = '\t';
 function createImage(Match, callback){
     var filenames = [];
     var pointer = 0;
-    for(var i = 0; i < 10; i++) {
+    while(pointer < 10) {
         Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/background.png", function (err, background) {
             Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/team1.png", function (err, team1) {
                 Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/team2.png", function (err, team2) {
@@ -240,11 +240,11 @@ function showodds(recipientId, parameters) {
     GetOddsCurrent('football', function(Match){
         createImage(Match, function(filename, Match){
             var pointer = 0;
-            for(var j = 0; j < 10; j++) {
+            while(pointer < 10) {
                 //messageTemp.push ('{"title":' + Match[0] + ' v ' + Match[1] + ', "subtitle":' + Match[2] + ',"image_url": "https://chatbettyeu.herokuapp.com/"' + filename + ',"buttons": [{"title": "Place a Bet","type": "postback","payload": "PLACE_BET"},{"title": "Add to Accumulator","type": "postback","payload": "ADD_TO_ACC"},{"title": "Update","type": "postback","payload": "UPDATE"}]}');
                 messageTemp.push('{"title": "' + Match[pointer * 5].substring(0, Match[pointer * 5].length - 1) + ' v ' + Match[pointer*5 + 1].substring(0, Match[pointer*5+1].length - 1) + '", "subtitle": "' + Match[pointer*5 + 2].substring(0, Match[pointer*5 +2].length - 1) + '", "image_url": "' + "https://chatbettyeu.herokuapp.com/" + filename[pointer] + '", "buttons":[{"title": "Place a Bet", "type": "postback", "payload": "PLACE_BET"},{"title": "Add to Accumulator", "type": "postback", "payload": "PLACE_BET"},{"title": "Update", "type": "postback", "payload": "PLACE_BET"}]} ');
                 pointer += 1;
-                if (j == 9) {
+                if (pointer == 10) {
                     console.log(messageTemp);
                     message = {
                         "attachment": {
