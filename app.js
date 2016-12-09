@@ -206,7 +206,7 @@ function showodds(recipientId, parameters) {
         var pointer = 0;
         while(pointer < 5) {
             //messageTemp.push ('{"title":' + Match[0] + ' v ' + Match[1] + ', "subtitle":' + Match[2] + ',"image_url": "https://chatbettyeu.herokuapp.com/"' + filename + ',"buttons": [{"title": "Place a Bet","type": "postback","payload": "PLACE_BET"},{"title": "Add to Accumulator","type": "postback","payload": "ADD_TO_ACC"},{"title": "Update","type": "postback","payload": "UPDATE"}]}');
-            messageTemp.push('{"title": "' + Match[pointer * 6].substring(0, Match[pointer * 6].length - 1) + ' v ' + Match[pointer*6 + 1].substring(0, Match[pointer*6+1].length - 1) + '", "subtitle": "' + Match[pointer*6 + 2].substring(0, Match[pointer*6 +2].length - 1) + '", "image_url": "' + "https://chatbettyeu.herokuapp.com/" + Match[pointer*6 + 5] + '", "buttons":[{"title": "Place a Bet", "type": "postback", "payload": "PLACE_BET"},{"title": "Add to Accumulator", "type": "postback", "payload": "PLACE_BET"},{"title": "Update", "type": "postback", "payload": "PLACE_BET"}]} ');
+            messageTemp.push('{"title": "' + Match[pointer * 6].substring(0, Match[pointer * 6].length - 1) + ' v ' + Match[pointer*6 + 1].substring(0, Match[pointer*6+1].length - 1) + '", "subtitle": "' + Match[pointer*6 + 2].substring(0, Match[pointer*6 +2].length - 1) + '", "image_url": "' + "https://chatbettyeu.herokuapp.com/" + Match[pointer*6 + 5] + '", "buttons":[{"title": "Place a Bet", "type": "postback", "payload": "PLACE_BET"},{"title": "Add to Accumulator", "type": "postback", "payload": "ADD_TO_ACC"},{"title": "Update", "type": "postback", "payload": "UPDATE"}]} ');
             pointer += 1;
             if (pointer == 5) {
                 console.log(messageTemp);
