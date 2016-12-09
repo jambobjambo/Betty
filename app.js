@@ -42,8 +42,8 @@ var DEFAULT_JSON_FORMAT = '\t';
 
 function createImage(Match, callback){
     var filenames = [];
-    for(var index = 0; index < 10; index++) {
-        var FileName = Math.floor((Math.random() * 9999999) + 1);
+    var pointer = 0;
+    for(var i = 0; i < 10; i++) {
         Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/background.png", function (err, background) {
             Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/team1.png", function (err, team1) {
                 Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/team2.png", function (err, team2) {
@@ -56,11 +56,13 @@ function createImage(Match, callback){
                                 image.composite(team1, 30, 15);
                                 image.composite(team2, 450, 15);
                                 Jimp.loadFont(Jimp.FONT_SANS_64_WHITE).then(function (font) { // load font from .fnt file
-                                    image.print(font, 30, 330, Match[index*3]);
-                                    image.print(font, 600, 330, Match[index*3 + 2]);
+                                    image.print(font, 30, 330, Match[pointer*5 + 3]);
+                                    image.print(font, 550, 330, Match[pointer*5 + 4]);
+                                    var FileName = Math.floor((Math.random() * 9999999) + 1);
                                     image.write(FileName + ".png", function () {
                                         filenames.push (FileName + '.png');
-                                        if(index == 9) {
+                                        pointer += 1;
+                                        if(i == 9) {
                                             callback(filenames, Match);
                                         }
                                     });
@@ -81,7 +83,6 @@ function GetOddsCurrent(teams, callback){
                 x('https://www.betfair.com/sport/football', ['.ui-runner-price'])(function (err, odds) {
                     var Match = [];
                     for(var index = 0; index < 10; index++){
-                        console.log(Match);
                         var HomeTeam = homeTeams[index].replace("\n","");
                         var AwayTeam = awayTeam[index].replace("\n","");
                         var Date = date[index].replace("\n","");
@@ -235,29 +236,30 @@ function introMessage(recipientId, message, NextMessage) {
 // send rich message with kitten
 function showodds(recipientId, parameters) {
     sendMessage(recipientId, {text: 'Let me have a look for you :)'});
-        var messageTemp = [];
-        GetOddsCurrent('football', function(Match){
-            createImage(Match, function(filename, Match){
-                console.log(Match[0]);
-                for(var index = 0; index < 10; index++) {
-                    //messageTemp.push ('{"title":' + Match[0] + ' v ' + Match[1] + ', "subtitle":' + Match[2] + ',"image_url": "https://chatbettyeu.herokuapp.com/"' + filename + ',"buttons": [{"title": "Place a Bet","type": "postback","payload": "PLACE_BET"},{"title": "Add to Accumulator","type": "postback","payload": "ADD_TO_ACC"},{"title": "Update","type": "postback","payload": "UPDATE"}]}');
-                    messageTemp.push('{"title": "' + Match[index * 5].substring(0, Match[index * 5].length - 1) + ' v ' + Match[index*5 + 1].substring(0, Match[index*5+1].length - 1) + '", "subtitle": "' + Match[index*5 + 2].substring(0, Match[index*5 +2].length - 1) + '", "image_url": "' + "https://chatbettyeu.herokuapp.com/" + filename[index] + '", "buttons":[{"title": "Place a Bet", "type": "postback", "payload": "PLACE_BET"},{"title": "Add to Accumulator", "type": "postback", "payload": "PLACE_BET"},{"title": "Update", "type": "postback", "payload": "PLACE_BET"}]} ');
-                    if (index == 9) {
-
-                        message = {
-                            "attachment": {
-                                "type": "template",
-                                "payload": {
-                                    "template_type": "generic",
-                                    "elements": [messageTemp[0], messageTemp[1], messageTemp[2], messageTemp[3], messageTemp[4], messageTemp[5], messageTemp[6], messageTemp[7], messageTemp[8], messageTemp[9]]
-                                }
+    var messageTemp = [];
+    GetOddsCurrent('football', function(Match){
+        createImage(Match, function(filename, Match){
+            var pointer = 0;
+            for(var j = 0; j < 10; j++) {
+                //messageTemp.push ('{"title":' + Match[0] + ' v ' + Match[1] + ', "subtitle":' + Match[2] + ',"image_url": "https://chatbettyeu.herokuapp.com/"' + filename + ',"buttons": [{"title": "Place a Bet","type": "postback","payload": "PLACE_BET"},{"title": "Add to Accumulator","type": "postback","payload": "ADD_TO_ACC"},{"title": "Update","type": "postback","payload": "UPDATE"}]}');
+                messageTemp.push('{"title": "' + Match[pointer * 5].substring(0, Match[pointer * 5].length - 1) + ' v ' + Match[pointer*5 + 1].substring(0, Match[pointer*5+1].length - 1) + '", "subtitle": "' + Match[pointer*5 + 2].substring(0, Match[pointer*5 +2].length - 1) + '", "image_url": "' + "https://chatbettyeu.herokuapp.com/" + filename[pointer] + '", "buttons":[{"title": "Place a Bet", "type": "postback", "payload": "PLACE_BET"},{"title": "Add to Accumulator", "type": "postback", "payload": "PLACE_BET"},{"title": "Update", "type": "postback", "payload": "PLACE_BET"}]} ');
+                pointer += 1;
+                if (j == 9) {
+                    console.log(messageTemp);
+                    message = {
+                        "attachment": {
+                            "type": "template",
+                            "payload": {
+                                "template_type": "generic",
+                                "elements": [messageTemp[0], messageTemp[1], messageTemp[2], messageTemp[3], messageTemp[4], messageTemp[5], messageTemp[6], messageTemp[7], messageTemp[8], messageTemp[9]]
                             }
-                        };
-                        sendMessage(recipientId, message);
-                    }
+                        }
+                    };
+                    sendMessage(recipientId, message);
                 }
-            });
+            }
         });
+    });
 
     /*var ref = firebase.database().ref('user/');
     ref.child(recipientId).once('value', function(snapshot) {
