@@ -41,31 +41,23 @@ var DEFAULT_ENCODING = 'utf-8';
 var DEFAULT_JSON_FORMAT = '\t';
 
 function createImage(Match, callback){
-    var filenames = [];
-    var pointer = 0;
-    while(pointer < 10) {
-        Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/background.png", function (err, background) {
-            Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/team1.png", function (err, team1) {
-                Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/team2.png", function (err, team2) {
-                    Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/Left.png", function (err, circle1) {
-                        Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/Right.png", function (err, circle2) {
-                            var image = new Jimp(780, 410, function (err, image) {
-                                image.composite(background, 0, 0);
-                                image.composite(circle1, 0, 210);
-                                image.composite(circle2, 480, 210);
-                                image.composite(team1, 30, 15);
-                                image.composite(team2, 450, 15);
-                                Jimp.loadFont(Jimp.FONT_SANS_64_WHITE).then(function (font) { // load font from .fnt file
-                                    image.print(font, 30, 330, Match[pointer*5 + 3]);
-                                    image.print(font, 550, 330, Match[pointer*5 + 4]);
-                                    var FileName = Math.floor((Math.random() * 9999999) + 1);
-                                    image.write(FileName + ".png", function () {
-                                        filenames.push (FileName + '.png');
-                                        pointer += 1;
-                                        if(i == 9) {
-                                            callback(filenames, Match);
-                                        }
-                                    });
+    Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/background.png", function (err, background) {
+        Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/team1.png", function (err, team1) {
+            Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/team2.png", function (err, team2) {
+                Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/Left.png", function (err, circle1) {
+                    Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/Right.png", function (err, circle2) {
+                        var image = new Jimp(780, 410, function (err, image) {
+                            image.composite(background, 0, 0);
+                            image.composite(circle1, 0, 210);
+                            image.composite(circle2, 480, 210);
+                            image.composite(team1, 30, 15);
+                            image.composite(team2, 450, 15);
+                            Jimp.loadFont(Jimp.FONT_SANS_64_WHITE).then(function (font) { // load font from .fnt file
+                                image.print(font, 30, 330, Match[3]);
+                                image.print(font, 560, 330, Match[4]);
+                                var FileName = Math.floor((Math.random() * 9999999) + 1);
+                                image.write(FileName + ".png", function () {
+                                    callback(FileName + '.png', Match);
                                 });
                             });
                         });
@@ -73,16 +65,18 @@ function createImage(Match, callback){
                 });
             });
         });
-    }
+    });
 }
 
 function GetOddsCurrent(teams, callback){
+    var amount_of_lists = 5;
     x('https://www.betfair.com/sport/football', ['.home-team-name'])(function (err, homeTeams) {
         x('https://www.betfair.com/sport/football', ['.away-team-name'])(function (err, awayTeam) {
             x('https://www.betfair.com/sport/football', ['.date'])(function (err, date) {
                 x('https://www.betfair.com/sport/football', ['.ui-runner-price'])(function (err, odds) {
-                    var Match = [];
-                    for(var index = 0; index < 10; index++){
+                    var filenames = [];
+                    for(var index = 0; index < amount_of_lists; index++){
+                        var Match = [];
                         var HomeTeam = homeTeams[index].replace("\n","");
                         var AwayTeam = awayTeam[index].replace("\n","");
                         var Date = date[index].replace("\n","");
@@ -91,55 +85,23 @@ function GetOddsCurrent(teams, callback){
                         Match.push(Date);
                         Match.push(odds[index * 3]);
                         Match.push(odds[index * 3 + 2]);
-                        if(index == 9) {
-                            callback(Match);
-                        }
+                        createImage(Match, function(filename, Match) {
+                            filenames.push(Match[0]);
+                            filenames.push(Match[1]);
+                            filenames.push(Match[2]);
+                            filenames.push(Match[3]);
+                            filenames.push(Match[4]);
+                            filenames.push(filename);
+                            if(filenames.length == amount_of_lists*6){
+                                callback(filenames);
+                            }
+                        });
                     }
                 });
             });
         });
     });
 }
-
-// Server frontpage
-function GetOdds(teams, callback){
-    Betfair.login({
-        applicationKey: 'KpCoeurXPW5aI2mF',
-        username: 'agwelford',
-        password: 'Addington40',
-
-        certFile: 'ChatBetty.crt',
-        keyFile: 'client.key'
-    }, function (err, betfair) {
-        if (err) {
-            return console.error(err);
-        }
-
-        // get markets matchOdss, over/Under 0.5 from event 'Sunderland v Liverpool'
-        betfair.betting.listEvents({
-            textQuery: 'english premier league'
-        }, function (err, res) {
-            var odds = res.length;
-            var start = 0;
-            var oddsList;
-            while(odds > start) {
-                var event = res[start].event.id;
-                x('https://www.betfair.com/sport/football/event?eventId=' + event, ['.com-bet-button'])(function (err, odds) {
-                    oddsList.push(odds);
-                    console.log('got here');
-                    start += 1;
-                })
-            }
-            if(odds == start){
-                callback(oddsList);
-            }
-        });
-    });
-
-}
-
-
-
 
 // Facebook Webhook
 app.get('/webhook', function (req, res) {
@@ -233,32 +195,33 @@ function introMessage(recipientId, message, NextMessage) {
     });
 }
 
+
+
 // send rich message with kitten
 function showodds(recipientId, parameters) {
     sendMessage(recipientId, {text: 'Let me have a look for you :)'});
     var messageTemp = [];
     GetOddsCurrent('football', function(Match){
-        createImage(Match, function(filename, Match){
-            var pointer = 0;
-            while(pointer < 10) {
-                //messageTemp.push ('{"title":' + Match[0] + ' v ' + Match[1] + ', "subtitle":' + Match[2] + ',"image_url": "https://chatbettyeu.herokuapp.com/"' + filename + ',"buttons": [{"title": "Place a Bet","type": "postback","payload": "PLACE_BET"},{"title": "Add to Accumulator","type": "postback","payload": "ADD_TO_ACC"},{"title": "Update","type": "postback","payload": "UPDATE"}]}');
-                messageTemp.push('{"title": "' + Match[pointer * 5].substring(0, Match[pointer * 5].length - 1) + ' v ' + Match[pointer*5 + 1].substring(0, Match[pointer*5+1].length - 1) + '", "subtitle": "' + Match[pointer*5 + 2].substring(0, Match[pointer*5 +2].length - 1) + '", "image_url": "' + "https://chatbettyeu.herokuapp.com/" + filename[pointer] + '", "buttons":[{"title": "Place a Bet", "type": "postback", "payload": "PLACE_BET"},{"title": "Add to Accumulator", "type": "postback", "payload": "PLACE_BET"},{"title": "Update", "type": "postback", "payload": "PLACE_BET"}]} ');
-                pointer += 1;
-                if (pointer == 10) {
-                    console.log(messageTemp);
-                    message = {
-                        "attachment": {
-                            "type": "template",
-                            "payload": {
-                                "template_type": "generic",
-                                "elements": [messageTemp[0], messageTemp[1], messageTemp[2], messageTemp[3], messageTemp[4], messageTemp[5], messageTemp[6], messageTemp[7], messageTemp[8], messageTemp[9]]
-                            }
+        console.log('um');
+        var pointer = 0;
+        while(pointer < 5) {
+            //messageTemp.push ('{"title":' + Match[0] + ' v ' + Match[1] + ', "subtitle":' + Match[2] + ',"image_url": "https://chatbettyeu.herokuapp.com/"' + filename + ',"buttons": [{"title": "Place a Bet","type": "postback","payload": "PLACE_BET"},{"title": "Add to Accumulator","type": "postback","payload": "ADD_TO_ACC"},{"title": "Update","type": "postback","payload": "UPDATE"}]}');
+            messageTemp.push('{"title": "' + Match[pointer * 6].substring(0, Match[pointer * 6].length - 1) + ' v ' + Match[pointer*6 + 1].substring(0, Match[pointer*6+1].length - 1) + '", "subtitle": "' + Match[pointer*6 + 2].substring(0, Match[pointer*6 +2].length - 1) + '", "image_url": "' + "https://chatbettyeu.herokuapp.com/" + Match[pointer*6 + 5] + '", "buttons":[{"title": "Place a Bet", "type": "postback", "payload": "PLACE_BET"},{"title": "Add to Accumulator", "type": "postback", "payload": "PLACE_BET"},{"title": "Update", "type": "postback", "payload": "PLACE_BET"}]} ');
+            pointer += 1;
+            if (pointer == 5) {
+                console.log(messageTemp);
+                message = {
+                    "attachment": {
+                        "type": "template",
+                        "payload": {
+                            "template_type": "generic",
+                            "elements": [messageTemp[0], messageTemp[1], messageTemp[2], messageTemp[3], messageTemp[4], messageTemp[5], messageTemp[6], messageTemp[7], messageTemp[8], messageTemp[9]]
                         }
-                    };
-                    sendMessage(recipientId, message);
-                }
+                    }
+                };
+                sendMessage(recipientId, message);
             }
-        });
+        }
     });
 
     /*var ref = firebase.database().ref('user/');
