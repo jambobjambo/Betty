@@ -210,7 +210,7 @@ function showodds(recipientId, parameters) {
             pointer += 1;
             if (pointer == 5) {
                 console.log(messageTemp);
-                message = {
+                sendMessage(recipientId, {
                     "attachment": {
                         "type": "template",
                         "payload": {
@@ -218,8 +218,7 @@ function showodds(recipientId, parameters) {
                             "elements": [messageTemp[0], messageTemp[1], messageTemp[2], messageTemp[3], messageTemp[4], messageTemp[5], messageTemp[6], messageTemp[7], messageTemp[8], messageTemp[9]]
                         }
                     }
-                };
-                sendMessage(recipientId, message);
+                });
             }
         }
     });
