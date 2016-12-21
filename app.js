@@ -33,12 +33,6 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.listen((process.env.PORT || 8080));
 
-var Betfair = require('betfair-api-ng');
-
-var appkey = 'KpCoeurXPW5aI2mF';
-var ssid = 'mS5XUYJ9mBvSnumiuD7wogYT5zSn2JUKT3qQMQDaMt8=';
-var DEFAULT_ENCODING = 'utf-8';
-var DEFAULT_JSON_FORMAT = '\t';
 
 function createImage(Match, callback){
     Jimp.read("https://raw.githubusercontent.com/jambobjambo/Betty/master/image/background.png", function (err, background) {
