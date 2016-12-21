@@ -117,30 +117,31 @@ app.get('/webhook', function (req, res) {
 app.post('/webhook', function (req, res) {
     var events = req.body.entry[0].messaging;
     for (i = 0; i < events.length; i++) {
-        var event = events[i];
-		var ref = firebase.database().ref('user/');
-            ref.child(event.sender.id).once('value', function(snapshot) {
-                var exists = (snapshot.val() !== null);
-                if (exists == false){
-                    Welcome(event.sender.id);
-                } else{
-        	if (event.message && event.message.text) {
-            	var request = aiapp.textRequest(event.message.text, {
-                	sessionId: event.sender.id
-            	});
-            	request.on('response', function (response) {
-                if (response.result.action == "PLACE_BET") {
-                    showodds(event.sender.id, response.result.parameters);
-                } else {
-                    sendMessage(event.sender.id, {text: response.result.fulfillment.speech});
-             	   }
-            	});
-            	request.on('error', function (error) {
-            	    console.log(error);
-            	});
-            	request.end();
-        	}
-        }
+          var event = events[i];
+		      var ref = firebase.database().ref('user/');
+          ref.child(event.sender.id).once('value', function(snapshot) {
+              var exists = (snapshot.val() !== null);
+              if (exists == false){
+                  Welcome(event.sender.id);
+              } else{
+          	    if (event.message && event.message.text) {
+              	    var request = aiapp.textRequest(event.message.text, {
+                  	  sessionId: event.sender.id
+              	    });
+              	    request.on('response', function (response) {
+                      if (response.result.action == "PLACE_BET") {
+                        showodds(event.sender.id, response.result.parameters);
+                      } else {
+                      sendMessage(event.sender.id, {text: response.result.fulfillment.speech});
+               	      }
+              	    });
+              	    request.on('error', function (error) {
+              	       console.log(error);
+              	    });
+              	    request.end();
+          	    }
+              }
+            }
     }
     res.sendStatus(200);
 });
