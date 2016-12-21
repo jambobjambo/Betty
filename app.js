@@ -159,14 +159,34 @@ function sendMessage(recipientId, message) {
     });
 }
 
-function Welcome(recipientId) {
+function Welcome(id){
+    FB.api(id, function (res) {
+        if(!res || res.error) {
+            console.log(!res ? 'error occurred' : res.error);
+            return;
+        }
+        introMessage(id, {text: 'Hello ' + res.first_name + ' :D My name is Betty, BLAH BLAH'}, {text: "This is what I can do LALALALA"});
+
+        var UserID = id;
+        var ref = firebase.database().ref('user/');
+        ref.child(UserID).set({
+            client: "true",
+            first_name: res.first_name,
+            last_name: res.last_name,
+            gender: res.gender,
+            locale: res.locale
+        });
+    });
+}
+
+function introMessage(recipientId, message, NextMessage) {
     request({
         url: 'https://graph.facebook.com/v2.6/me/messages',
         qs: {access_token: process.env.PAGE_ACCESS_TOKEN},
         method: 'POST',
         json: {
             recipient: {id: recipientId},
-            message: "Hi I'm betty Blah Blah"
+            message: message
         }
     }, function(error, response, body) {
         if (error) {
@@ -180,7 +200,7 @@ function Welcome(recipientId) {
                 method: 'POST',
                 json: {
                     recipient: {id: recipientId},
-                    message: "You can do this and that"
+                    message: NextMessage
                 }
             }, function(error, response, body) {
                 if (error) {
