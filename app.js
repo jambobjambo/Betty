@@ -112,31 +112,34 @@ app.get('/webhook', function (req, res) {
     }
 });
 
-app.get('/image', function (req, res) {
-    res.send('Hi');
-});
 
 // handler receiving messages
 app.post('/webhook', function (req, res) {
     var events = req.body.entry[0].messaging;
     for (i = 0; i < events.length; i++) {
         var event = events[i];
-
-        if (event.message && event.message.text) {
-            var request = aiapp.textRequest(event.message.text, {
-                sessionId: event.sender.id
-            });
-            request.on('response', function (response) {
+		var ref = firebase.database().ref('user/');
+            ref.child(event.sender.id).once('value', function(snapshot) {
+                var exists = (snapshot.val() !== null);
+                if (exists == false){
+                    Welcome(event.sender.id);
+                } else{
+        	if (event.message && event.message.text) {
+            	var request = aiapp.textRequest(event.message.text, {
+                	sessionId: event.sender.id
+            	});
+            	request.on('response', function (response) {
                 if (response.result.action == "PLACE_BET") {
                     showodds(event.sender.id, response.result.parameters);
                 } else {
                     sendMessage(event.sender.id, {text: response.result.fulfillment.speech});
-                }
-            });
-            request.on('error', function (error) {
-                console.log(error);
-            });
-            request.end();
+             	   }
+            	});
+            	request.on('error', function (error) {
+            	    console.log(error);
+            	});
+            	request.end();
+        	}
         }
     }
     res.sendStatus(200);
@@ -161,14 +164,14 @@ function sendMessage(recipientId, message) {
     });
 }
 
-function introMessage(recipientId, message, NextMessage) {
+function Welcome(recipientId) {
     request({
         url: 'https://graph.facebook.com/v2.6/me/messages',
         qs: {access_token: process.env.PAGE_ACCESS_TOKEN},
         method: 'POST',
         json: {
             recipient: {id: recipientId},
-            message: message
+            message: "Hi I'm betty Blah Blah"
         }
     }, function(error, response, body) {
         if (error) {
@@ -182,7 +185,7 @@ function introMessage(recipientId, message, NextMessage) {
                 method: 'POST',
                 json: {
                     recipient: {id: recipientId},
-                    message: NextMessage
+                    message: "You can do this and that"
                 }
             }, function(error, response, body) {
                 if (error) {
